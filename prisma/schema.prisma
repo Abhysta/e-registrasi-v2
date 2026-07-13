@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model RegisterPelatihan {
+  id              Int        @id @default(autoincrement())
+  fullName        String
+  firstTitle      String
+  endTitle        String
+  NIP             String
+  placeBirth      String
+  dateBirth       DateTime
+  religion        String
+  golongan        String
+  jabatan         String
+  unitKerja       String
+  phone           String
+  email           String
+  nomorSuratTugas String
+  training        Training[]
+
+  @@map("register_pelatihan")
+}
+
+model Training {
+  id                  Int               @id @default(autoincrement())
+  namaPelatihan       String
+  tanggalMulai        DateTime
+  tanggalBerakhir     DateTime
+  registerPelatihan   RegisterPelatihan @relation(fields: [registerPelatihanId], references: [id])
+  registerPelatihanId Int
+
+  @@map("training")
+}
