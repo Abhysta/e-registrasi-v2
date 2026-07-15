@@ -1,7 +1,7 @@
 import {ResponseError} from "../error/response-error.js";
 
 
-function validateRegister(schema, req) {
+function validate(schema, req) {
     const result = schema.validate(req, {
         abortEarly: false
     });
@@ -14,5 +14,5 @@ function validateRegister(schema, req) {
 }
 
 export {
-    validateRegister
+    validate
 }

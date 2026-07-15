@@ -1,36 +1,30 @@
-import {validateRegister} from "../validators/validation.mjs";
+import {validate} from "../validators/validation.mjs";
 import {userRegister} from "../validators/user-register.mjs";
-import {prisma} from "../config/database.mjs";
+import {prismaClient} from "../config/database.mjs";
+import {ResponseError} from "../error/response-error.js";
 import Joi from "joi";
+import {trainingService} from "./training-service.mjs";
 
-function userRegisterService (req) {
-    const result = validateRegister(userRegister, req)
+async function userRegisterService (req) {
+    const result = validate(userRegister, req)
 
-    const count = prisma.registerPelatihan.findFirst({
+    console.log(`Result ${JSON.stringify(result)}`);
+
+    const find = await prismaClient.registerPelatihan.findFirst({
         where: {
-            NIP : result.nip
+            kodePelatihan : result.kodePelatihan,
+            NIP : result.NIP
         }
     })
 
-    if (count) {
-        res.status(200).send("Data already registered")
+    if (find) {
+        throw new ResponseError(404, "Data Already Registered")
     }
 
-    return prisma.registerPelatihan.create({
-        data : {
-            fullName: result.fullName,
-            firstTitle: result.firstTitle,
-            endTitle: result.endTitle,
-            NIP: result.NIP,
-            placeBirth: result.placeBirth,
-            dateBirth: result.dateBirth,
-            religion: result.religion,
-            golongan: result.golongan,
-            jabatan: result.jabatan
-            unitKerja: result.unitKerja
-            phone: result.phone,
-            email: result.email,
-            nomorSuratTugas: result.nomorSuratTugas
+    return prismaClient.registerPelatihan.create({
+        data : result,
+        include : {
+            training : true
         }
     })
 
