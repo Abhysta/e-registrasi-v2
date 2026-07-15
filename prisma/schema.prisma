@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -8,10 +8,10 @@ datasource db {
 }
 
 model RegisterPelatihan {
-  id              Int        @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   fullName        String
-  firstTitle      String
-  endTitle        String
+  firstTitle      String?
+  endTitle        String?
   NIP             String
   placeBirth      String
   dateBirth       DateTime
@@ -22,18 +22,20 @@ model RegisterPelatihan {
   phone           String
   email           String
   nomorSuratTugas String
-  training        Training[]
+  training        Training @relation(fields: [kodePelatihan], references: [kodePelatihan])
+  kodePelatihan   String
 
+  @@unique([kodePelatihan, NIP])
   @@map("register_pelatihan")
 }
 
 model Training {
-  id                  Int               @id @default(autoincrement())
-  namaPelatihan       String
-  tanggalMulai        DateTime
-  tanggalBerakhir     DateTime
-  registerPelatihan   RegisterPelatihan @relation(fields: [registerPelatihanId], references: [id])
-  registerPelatihanId Int
+  id                Int                 @id @default(autoincrement())
+  kodePelatihan     String              @unique
+  namaPelatihan     String
+  tanggalMulai      DateTime
+  tanggalBerakhir   DateTime
+  registerPelatihan RegisterPelatihan[]
 
   @@map("training")
 }
