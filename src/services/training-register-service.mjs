@@ -2,6 +2,7 @@ import { validate } from "../validators/validation.mjs";
 import { createRegisterValidation, updateRegisterValidation } from "../validators/training-register-validation.mjs";
 import { ResponseError } from "../error/response-error.js";
 import { prismaClient } from "../config/database.mjs";
+import { pool } from "../config/database-ekompetensiku.mjs";
 import crypto from "node:crypto";
 import path from "node:path";
 import fs from "node:fs";
@@ -25,20 +26,30 @@ const saveFile = async (file) => {
   return { namaFile: file.name, pathFile: uniqueName };
 };
 
-const createRegister = async (body, files) => {
+const createRegister = async (body, files, tokenUser) => {
   const result = validate(createRegisterValidation, body);
   const { bersedia, nama_satuan, id_unit, mulai_registrasi, batas_registrasi, ...pesertaData } = result;
+
+  // Fetch user data from e_kompetensiku by NIP from token
+  const nip = tokenUser?.NIP || pesertaData.nip_nik;
+  let userFromEkomp = null;
+  if (nip) {
+    const [rows] = await pool.query("SELECT * FROM user WHERE nip = ?", [nip]);
+    if (rows.length) {
+      userFromEkomp = rows[0];
+    }
+  }
 
   // Create tabel_peserta
   const peserta = await prismaClient.tabelPeserta.create({
     data: {
-      nama: pesertaData.nama,
-      nip_nik: pesertaData.nip_nik,
-      tempat_lahir: pesertaData.tempat_lahir,
-      tgl_lahir: pesertaData.tgl_lahir,
-      no_hp: pesertaData.no_hp,
-      email: pesertaData.email,
-      ttd: pesertaData.ttd,
+      nama: pesertaData.nama || userFromEkomp?.nama || "",
+      nip_nik: pesertaData.nip_nik || nip || "",
+      tempat_lahir: pesertaData.tempat_lahir || userFromEkomp?.tempat_lahir || null,
+      tgl_lahir: pesertaData.tgl_lahir || userFromEkomp?.tgl_lahir || null,
+      no_hp: pesertaData.no_hp || userFromEkomp?.no_hp || null,
+      email: pesertaData.email || userFromEkomp?.email || null,
+      ttd: pesertaData.ttd || null,
     },
   });
 

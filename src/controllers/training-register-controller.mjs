@@ -2,7 +2,7 @@ import { createRegister, updateRegister, getRegister } from "../services/trainin
 
 const createController = async (req, res, next) => {
   try {
-    const result = await createRegister(req.body, req.files);
+    const result = await createRegister(req.body, req.files, req.user);
     res.status(200).json(result);
   } catch (e) {
     next(e);
