@@ -1,12 +1,11 @@
 import express from "express";
-import {registerController} from "../controllers/user-controller.mjs";
-import {trainingController} from "../controllers/training-controller.mjs";
+import { verificationMiddleware } from "../middleware/verification-middleware.mjs";
+import { createController, updateController, getController } from "../controllers/training-register-controller.mjs";
 
+const route = express.Router();
 
-const route = express.Router()
-route.post("/register-user", registerController);
-route.post("/training-register", trainingController);
+route.post("/api/training-register", verificationMiddleware, createController);
+route.patch("/api/training-register", verificationMiddleware, updateController);
+route.get("/api/training-register/:idPeserta", verificationMiddleware, getController);
 
-export {
-    route
-}
+export { route };

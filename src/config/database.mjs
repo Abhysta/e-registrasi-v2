@@ -4,7 +4,7 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 const adapter = new PrismaMariaDb({
     host: "localhost",
     user: "root",
-    database: "regis_2",
+    database: "regis_3",
     password: "aysta123",
 });
 

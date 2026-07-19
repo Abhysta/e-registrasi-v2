@@ -18,12 +18,97 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
- * Model RegisterPelatihan
+ * Model TblAssign
  * 
  */
-export type RegisterPelatihan = Prisma.RegisterPelatihanModel
+export type TblAssign = Prisma.TblAssignModel
 /**
- * Model Training
+ * Model TabelPeserta
  * 
  */
-export type Training = Prisma.TrainingModel
+export type TabelPeserta = Prisma.TabelPesertaModel
+/**
+ * Model SatuanKerja
+ * 
+ */
+export type SatuanKerja = Prisma.SatuanKerjaModel
+/**
+ * Model MasterBerkas
+ * 
+ */
+export type MasterBerkas = Prisma.MasterBerkasModel
+/**
+ * Model admin
+ * 
+ */
+export type admin = Prisma.adminModel
+/**
+ * Model api_consumer
+ * 
+ */
+export type api_consumer = Prisma.api_consumerModel
+/**
+ * Model dosen
+ * 
+ */
+export type dosen = Prisma.dosenModel
+/**
+ * Model jenis_kursus
+ * 
+ */
+export type jenis_kursus = Prisma.jenis_kursusModel
+/**
+ * Model jenis_pelatihan
+ * 
+ */
+export type jenis_pelatihan = Prisma.jenis_pelatihanModel
+/**
+ * Model jenjang
+ * 
+ */
+export type jenjang = Prisma.jenjangModel
+/**
+ * Model jurusan
+ * 
+ */
+export type jurusan = Prisma.jurusanModel
+/**
+ * Model log
+ * 
+ */
+export type log = Prisma.logModel
+/**
+ * Model peserta_badiklat
+ * 
+ */
+export type peserta_badiklat = Prisma.peserta_badiklatModel
+/**
+ * Model pimti
+ * 
+ */
+export type pimti = Prisma.pimtiModel
+/**
+ * Model rekap_mahasiswa
+ * 
+ */
+export type rekap_mahasiswa = Prisma.rekap_mahasiswaModel
+/**
+ * Model sat
+ * 
+ */
+export type sat = Prisma.satModel
+/**
+ * Model testimoni
+ * 
+ */
+export type testimoni = Prisma.testimoniModel
+/**
+ * Model top10
+ * 
+ */
+export type top10 = Prisma.top10Model
+/**
+ * Model unit_kerja
+ * 
+ */
+export type unit_kerja = Prisma.unit_kerjaModel

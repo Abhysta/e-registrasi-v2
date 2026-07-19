@@ -9,7 +9,18 @@
 * 🟢 You can import this file directly.
 */
 
+export const api_consumer_acc_data = {
+  None: 'None',
+  Tekpim: 'Tekpim',
+  Fungham: 'Fungham',
+  penkom: 'penkom',
+  kepri: 'kepri',
+  jateng: 'jateng',
+  sulut: 'sulut',
+  all: 'all',
+  Badiklat_Kepri_Hukum_dan_HAM: 'Badiklat_Kepri_Hukum_dan_HAM',
+  Badiklat_Sulut_Hukum_dan_HAM: 'Badiklat_Sulut_Hukum_dan_HAM',
+  Badiklat_Jateng_Hukum_dan_HAM: 'Badiklat_Jateng_Hukum_dan_HAM'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type api_consumer_acc_data = (typeof api_consumer_acc_data)[keyof typeof api_consumer_acc_data]

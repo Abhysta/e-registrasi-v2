@@ -7,35 +7,189 @@ datasource db {
   provider = "mysql"
 }
 
-model RegisterPelatihan {
-  id              Int      @id @default(autoincrement())
-  fullName        String
-  firstTitle      String?
-  endTitle        String?
-  NIP             String
-  placeBirth      String
-  dateBirth       DateTime
-  religion        String
-  golongan        String
-  jabatan         String
-  unitKerja       String
-  phone           String
-  email           String
-  nomorSuratTugas String
-  training        Training @relation(fields: [kodePelatihan], references: [kodePelatihan])
-  kodePelatihan   String
+model TblAssign {
+  id               Int       @id @default(autoincrement())
+  id_peserta       Int
+  id_pelatihan     Int?
+  gelar_depan      String?   @db.VarChar(255)
+  gelar_belakang   String?   @db.VarChar(255)
+  jabatan          String?   @db.VarChar(255)
+  id_satker        Int?
+  bersedia         Int?
+  tgl_registrasi   DateTime? @db.DateTime(0)
+  sprint           String?   @db.VarChar(255)
+  foto             String?   @db.VarChar(255)
+  mulai_registrasi DateTime? @db.DateTime(0)
+  batas_registrasi DateTime? @db.DateTime(0)
 
-  @@unique([kodePelatihan, NIP])
-  @@map("register_pelatihan")
+  @@map("tbl_assign")
 }
 
-model Training {
-  id                Int                 @id @default(autoincrement())
-  kodePelatihan     String              @unique
-  namaPelatihan     String
-  tanggalMulai      DateTime
-  tanggalBerakhir   DateTime
-  registerPelatihan RegisterPelatihan[]
+model TabelPeserta {
+  id           Int       @id @default(autoincrement())
+  nip_nik      String?   @db.VarChar(255)
+  nama         String?   @db.VarChar(255)
+  tempat_lahir String?   @db.VarChar(255)
+  tgl_lahir    DateTime? @db.DateTime(0)
+  no_hp        String?   @db.VarChar(255)
+  email        String?   @db.VarChar(255)
+  ttd          String?   @db.VarChar(255)
 
-  @@map("training")
+  @@map("tabel_peserta")
+}
+
+model SatuanKerja {
+  id          Int     @id @default(autoincrement())
+  id_unit     Int?
+  nama_satuan String? @db.VarChar(255)
+
+  @@map("satuan_kerja")
+}
+
+model MasterBerkas {
+  id          Int     @id @default(autoincrement())
+  nama_berkas String? @db.VarChar(255)
+  id_assign   Int
+
+  @@map("master_berkas")
+}
+
+model admin {
+  id        Int    @id @default(autoincrement())
+  nip       String @db.VarChar(255)
+  pass      String @db.VarChar(255)
+  nama      String @db.VarChar(100)
+  sat       Int
+  is_active Int    @default(1)
+}
+
+model api_consumer {
+  id_consumer Int                   @id @default(autoincrement())
+  consumer    String                @default("0") @db.VarChar(255)
+  key         String                @default("0") @db.VarChar(255)
+  acc_data    api_consumer_acc_data @default(dbgenerated("0"))
+  read        Int                   @default(0)
+  create      Int                   @default(0)
+  update      Int                   @default(0)
+  delete      Int                   @default(0)
+}
+
+model dosen {
+  id_dosen   Int      @id @default(autoincrement())
+  nama       String   @db.VarChar(150)
+  nip        String?  @db.VarChar(20)
+  golongan   String?  @db.VarChar(10)
+  id_jenjang Int?
+  id_jurusan Int?
+  jenjang    jenjang? @relation(fields: [id_jenjang], references: [id_jenjang], onDelete: Restrict, onUpdate: Restrict, map: "dosen_ibfk_1")
+  jurusan    jurusan? @relation(fields: [id_jurusan], references: [id_jurusan], onDelete: Restrict, onUpdate: Restrict, map: "dosen_ibfk_2")
+
+  @@index([id_jenjang], map: "id_jenjang")
+  @@index([id_jurusan], map: "id_jurusan")
+}
+
+model jenis_kursus {
+  id          Int    @id @default(autoincrement())
+  id_kursus   String @db.VarChar(255)
+  nama_kursus String @db.VarChar(255)
+}
+
+model jenis_pelatihan {
+  id                      Int    @id @default(autoincrement())
+  siasn_id                Int
+  jenis_pelatihan         String @db.VarChar(255)
+  jenis_kursus_sertifikat String @db.VarChar(2)
+}
+
+model jenjang {
+  id_jenjang   Int     @id @default(autoincrement())
+  nama_jenjang String  @unique(map: "Nama_Jenjang") @db.VarChar(30)
+  dosen        dosen[]
+}
+
+model jurusan {
+  id_jurusan         Int     @id @default(autoincrement())
+  nama_jurusan       String  @unique(map: "Nama_Jurusan") @db.VarChar(50)
+  warna_identifikasi String? @db.VarChar(10)
+  dosen              dosen[]
+}
+
+model log {
+  id_log     Int      @id @default(autoincrement())
+  user       String   @default("") @db.VarChar(255)
+  do         String?  @db.VarChar(255)
+  on_table   String?  @db.VarChar(255)
+  keterangan String?  @db.Text
+  insert_at  DateTime @db.Timestamp(0)
+}
+
+model peserta_badiklat {
+  id           Int     @id @default(autoincrement())
+  id_kkwi      String  @db.VarChar(255)
+  nip          String  @default("") @db.VarChar(255)
+  nama_peserta String  @db.VarChar(255)
+  jabatan      String? @db.VarChar(255)
+  kanwil       String? @db.VarChar(255)
+  satker       String? @db.VarChar(255)
+}
+
+model pimti {
+  id        Int    @id @default(autoincrement())
+  nip       String @db.VarChar(255)
+  pass      String @db.VarChar(255)
+  nama      String @db.VarChar(100)
+  sat       Int
+  is_active Int    @default(1)
+}
+
+model rekap_mahasiswa {
+  id         Int     @id @default(autoincrement())
+  tingkat    String? @db.VarChar(10)
+  jurusan    String? @db.VarChar(50)
+  subjurusan String? @db.VarChar(50)
+  laki_laki  Int?    @default(0)
+  perempuan  Int?    @default(0)
+}
+
+model sat {
+  id_sat   Int    @id @default(autoincrement())
+  sat      Int
+  nama_sat String @db.VarChar(255)
+}
+
+model testimoni {
+  id_testi   Int     @id @default(autoincrement())
+  id_diklat  Int     @default(0)
+  id_ereg    Int     @default(0)
+  link       String  @db.Text
+  quote      String? @db.Text
+  id_peserta Int?
+}
+
+model top10 {
+  id_top     Int    @id @default(autoincrement())
+  id_peserta Int
+  id_diklat  Int    @default(0)
+  id_ereg    Int    @default(0)
+  peringkat  Int
+  photo      String @default("foto_default.png") @db.VarChar(255)
+}
+
+model unit_kerja {
+  id          Int     @id @default(autoincrement())
+  nama_satuan String? @db.VarChar(255)
+}
+
+enum api_consumer_acc_data {
+  None                           @map("0")
+  Tekpim
+  Fungham
+  penkom
+  kepri
+  jateng
+  sulut
+  all
+  Badiklat_Kepri_Hukum_dan_HAM  @map("Badiklat Kepri Hukum dan HAM")
+  Badiklat_Sulut_Hukum_dan_HAM  @map("Badiklat Sulut Hukum dan HAM")
+  Badiklat_Jateng_Hukum_dan_HAM @map("Badiklat Jateng Hukum dan HAM")
 }
